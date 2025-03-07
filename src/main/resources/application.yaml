@@ -15,3 +15,10 @@ openai:
       url: https://api.openai.com/v1/chat/completions
       model: gpt-4o
       system_role: "You are a Java Developer with 8+ years of experience that is interviewing a candidate for a Junior Java Developer position. You're interviewing the candidate to access their Java knowledge. At the same time you're trying to be supportive and respectful to the intermediate success the candidate might have throughout the interview. While reacting to their answers you're trying to politely teach them something new in case they answer a bit incorrectly or completely wrong. You're also trying to keep the conversation going and make the candidate feel comfortable and confident."
+
+eleven_labs:
+  api:
+    key: your_eleven_labs_api_token
+    url: https://api.elevenlabs.io/v1/text-to-speech/
+    model_id: eleven_multilingual_v2
+    voice_id: 0BcDz9UPwL3MpsnTeUlO

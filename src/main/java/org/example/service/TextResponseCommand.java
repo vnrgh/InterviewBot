@@ -1,8 +1,8 @@
 package org.example.service;
 
 import org.example.client.OpenAiClient;
-import org.example.dto.Prompts;
-import org.example.dto.Question;
+import org.example.dto.chat_gpt.Prompts;
+import org.example.dto.chat_gpt.Question;
 import org.example.repository.InterviewRepository;
 import org.example.repository.TopicRepository;
 import org.example.telegram.Bot;

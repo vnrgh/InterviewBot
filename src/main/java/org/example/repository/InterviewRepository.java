@@ -1,7 +1,7 @@
 package org.example.repository;
 
 import lombok.Getter;
-import org.example.dto.Question;
+import org.example.dto.chat_gpt.Question;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
