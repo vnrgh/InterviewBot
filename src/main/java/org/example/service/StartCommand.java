@@ -77,7 +77,6 @@ public class StartCommand extends Command {
         Question dto = new Question();
         dto.setQuestion(topic);
 
-        System.out.println(dto);
         return openAiClient.promptModel(prompt);
     }
 }
