@@ -41,22 +41,19 @@ public class InterviewRepository {
     }
 
     public void addAnswer(String userId, String answer) {
-        if (!userQuestions.containsKey(userId)) {
+        if (!hasSession(userId)) {
             throw new IllegalStateException("There is no interview session started for user " + userId);
         }
-
         Deque<Question> questions = userQuestions.get(userId);
 
         if (questions.isEmpty()) {
             throw new IllegalStateException("No questions available for user " + userId);
         }
-
         Question question = questions.peek();
 
         if (question.getAnswer() != null) {
             throw new IllegalStateException("An answer is already assigned to the last question for user " + userId);
         }
-
         question.setAnswer(answer);
     }
 
