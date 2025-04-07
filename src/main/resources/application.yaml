@@ -1,9 +1,6 @@
 bot:
   token: your_bot_token
 
-interview:
-  max-questions: 10
-
 openai:
   api:
     key: your_chatgpt_api_token

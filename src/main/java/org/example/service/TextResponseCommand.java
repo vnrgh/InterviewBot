@@ -36,6 +36,28 @@ public class TextResponseCommand extends Command {
         String answer = update.getMessage().toString();
         String userId = update.getMessage().getFrom().getId().toString();
 
+        if (interviewRepository.isAwaitingQuestionCount(userId)) {
+            String text = update.getMessage().getText();
+            try {
+                int count = Integer.parseInt(text);
+                if (count < 1 || count > 10) {
+                    return "Введите число от 1 до 10";
+                }
+
+                interviewRepository.saveQuestionCount(userId, count);
+                interviewRepository.startSession(userId, count);
+
+                String prompt = String.format(PROMPTS.getQuestionPrompt(), interviewRepository.getUserQuestions().get(userId).peek().getQuestion());
+                String enrichedQuestion = openAiClient.promptModel(prompt);
+
+                    return "Интервью начинается! Вот первый вопрос:\n\n" +
+                            enrichedQuestion;
+
+            } catch (NumberFormatException e) {
+                return "Введите корректное число";
+            }
+        }
+
         interviewRepository.addAnswer(userId, answer);
         answeredQuestions.add(interviewRepository.getUserQuestions().get(userId).peek());
 

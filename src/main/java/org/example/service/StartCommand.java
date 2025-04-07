@@ -68,7 +68,8 @@ public class StartCommand extends Command {
         String userId = update.getMessage().getFrom().getId().toString();
 
         if (!interviewRepository.hasSession(userId)) {
-            interviewRepository.startSession(userId);
+            interviewRepository.markAwaitingQuestionCount(userId);
+            return "Привет! Перед тем, как начать - из скольких вопросов будет состоять наше интервью? (От 1 до 10): ";
         }
 
         String topic = interviewRepository.getUserQuestions().get(userId).peekFirst().getQuestion();
