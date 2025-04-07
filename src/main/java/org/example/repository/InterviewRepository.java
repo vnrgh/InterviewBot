@@ -2,7 +2,6 @@ package org.example.repository;
 
 import lombok.Getter;
 import org.example.dto.chat_gpt.Question;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayDeque;
@@ -17,18 +16,17 @@ public class InterviewRepository {
     private final Map<String, Deque<Question>> userQuestions = new HashMap<>();
     private final TopicRepository topicRepository;
 
-    @Value("${interview.max-questions}")
-    private int maxQuestions;
-
+    private final Map<String, Boolean> awaitingQuestionCount = new HashMap<>();
+    private final Map<String, Integer> questionCounts = new HashMap<>();
 
     public InterviewRepository(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
     }
 
-    public void startSession(String userId) {
+    public void startSession(String userId, int questionCount) {
         userQuestions.put(userId, new ArrayDeque<>());
 
-        for (int i = 0; i < maxQuestions; i++) {
+        for (int i = 0; i < questionCount; i++) {
             String question = topicRepository.getRandomTopic();
             Question dto = new Question();
             dto.setQuestion(question);
@@ -62,5 +60,18 @@ public class InterviewRepository {
                 .stream()
                 .filter(q -> q.getAnswer() == null)
                 .count();
+    }
+
+    public void markAwaitingQuestionCount(String userId) {
+        awaitingQuestionCount.put(userId, true);
+    }
+
+    public boolean isAwaitingQuestionCount(String userId) {
+        return awaitingQuestionCount.getOrDefault(userId, false);
+    }
+
+    public void saveQuestionCount(String userId, int count) {
+        questionCounts.put(userId, count);
+        awaitingQuestionCount.remove(userId);
     }
 }
