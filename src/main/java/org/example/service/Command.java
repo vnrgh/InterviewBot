@@ -13,8 +13,8 @@ public abstract class Command {
     protected final TopicRepository topicRepository;
     protected final OpenAiClient openAiClient;
     protected final InterviewRepository interviewRepository;
+    protected final InterviewService interviewService;
 
     public abstract boolean isApplicable(Update update);
-
     public abstract String process(Update update, Bot bot);
 }
