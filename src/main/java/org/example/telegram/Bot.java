@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendVoice;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -29,17 +28,16 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage()) {
+        if (update.hasMessage() || update.hasCallbackQuery()) {
             commands.stream()
                     .filter(command -> command.isApplicable(update))
                     .findFirst()
                     .ifPresent(command -> {
-                        Message message = update.getMessage();
                         String answer = command.process(update, this);
                         byte[] audioData = elevenLabsClient.generateSpeech(answer);
 
                         SendVoice sendVoice = new SendVoice();
-                        sendVoice.setChatId(message.getChatId().toString());
+                        sendVoice.setChatId(extractChatId(update).toString());
                         sendVoice.setVoice(new InputFile(new ByteArrayInputStream(audioData), "response.ogg"));
 
                         try {
@@ -49,6 +47,12 @@ public class Bot extends TelegramLongPollingBot {
                         }
                     });
         }
+    }
+
+    public Long extractChatId(Update update) {
+        return update.hasMessage()
+                ? update.getMessage().getChatId()
+                : update.getCallbackQuery().getMessage().getChatId();
     }
 
     @Override

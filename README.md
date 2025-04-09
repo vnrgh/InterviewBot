@@ -43,9 +43,6 @@ You can interact with the bot using both **text and voice messages** — thanks 
    eleven_labs:
       api:
         key: YOUR_ELEVENLABS_API_KEY
-   
-   interview:
-      max-questions: NUMBER_OF_QUESTIONS # 10 by default
    ```
 
 2. Set your bot name in `Bot.java`:

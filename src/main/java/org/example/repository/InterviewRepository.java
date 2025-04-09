@@ -8,16 +8,15 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 @Getter
 public class InterviewRepository {
     private final Map<String, Deque<Question>> userQuestions = new HashMap<>();
     private final TopicRepository topicRepository;
-
-    private final Map<String, Boolean> awaitingQuestionCount = new HashMap<>();
-    private final Map<String, Integer> questionCounts = new HashMap<>();
 
     public InterviewRepository(TopicRepository topicRepository) {
         this.topicRepository = topicRepository;
@@ -47,11 +46,17 @@ public class InterviewRepository {
         if (questions.isEmpty()) {
             throw new IllegalStateException("No questions available for user " + userId);
         }
-        Question question = questions.peek();
 
-        if (question.getAnswer() != null) {
+        // Ищем первый неотвеченный вопрос
+        Question question = questions.stream()
+                .filter(q -> q.getAnswer() == null)
+                .findFirst()
+                .orElse(null);
+
+        if (question == null) {
             throw new IllegalStateException("An answer is already assigned to the last question for user " + userId);
         }
+
         question.setAnswer(answer);
     }
 
@@ -62,16 +67,10 @@ public class InterviewRepository {
                 .count();
     }
 
-    public void markAwaitingQuestionCount(String userId) {
-        awaitingQuestionCount.put(userId, true);
-    }
-
-    public boolean isAwaitingQuestionCount(String userId) {
-        return awaitingQuestionCount.getOrDefault(userId, false);
-    }
-
-    public void saveQuestionCount(String userId, int count) {
-        questionCounts.put(userId, count);
-        awaitingQuestionCount.remove(userId);
+    public List<Question> getAnsweredQuestions(String userId) {
+        return userQuestions.getOrDefault(userId, new ArrayDeque<>())
+                .stream()
+                .filter(q -> q.getAnswer() != null)
+                .collect(Collectors.toList());
     }
 }
